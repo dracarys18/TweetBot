@@ -22,7 +22,7 @@ def create_table():
     cur.execute("""CREATE TABLE acdet (
         ACID INT PRIMARY KEY  NOT NULL,
         ACCNAME TEXT  NOT NULL,
-        LAST_TWEET INT );""")
+        LAST_TWEET BIGINT );""")
 
     conn.commit()
     conn.close()
@@ -37,8 +37,8 @@ class Users:
             ac_name = ""
         if not last_tweet:
             last_tweet = 0
-        data = (ac_id, ac_name, last_tweet)
-        command = "INSERT INTO acdet (ACID, ACCNAME , LAST_TWEET) VALUES (%s, %s, %s, %s )"
+        data = (ac_id,ac_name,last_tweet)
+        command = "INSERT INTO acdet (ACID, ACCNAME , LAST_TWEET) VALUES (%s, %s, %s)"
         cur.execute(command, data)
         conn.commit()
         return True
@@ -54,6 +54,7 @@ class Users:
     
     def get_lastweet(self,ac_id):
         cur.execute(f"SELECT last_tweet from acdet where ACID = {str(ac_id)} ")
+        return cur.fetchall()
 
     def count(self):
         cur.execute(f"SELECT COUNT(*) from acdet")
