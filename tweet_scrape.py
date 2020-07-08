@@ -20,16 +20,12 @@ class TweetBot(Bot):
         db = Users()
         userid = 0
         results = []
-        last_tweet = db.get_lastweet(ac_id=1)
-        try:
-            k = int(last_tweet[0][0])
-        except:
-            k=0
+        n = self.set_last_tweet(userid)
         chatid = -1001422338305
         try:
             for i in self.userslist:
-                if k!=0:
-                    twit=api.user_timeline(screen_name=i,count=20,max_id=k-1,include_retweets=True,tweet_mode = 'extended')
+                if n!=0:
+                    twit=api.user_timeline(screen_name=i,count=20,since_id=n,include_retweets=True,tweet_mode = 'extended')
                     results.append(twit)
                 else:
                     twit = api.user_timeline(screen_name=i,count=20,include_retweets=True,tweet_mode = 'extended')
@@ -43,11 +39,26 @@ class TweetBot(Bot):
                     'name'  : i.user.name,             
                     'text'  : i.full_text
                 }
-                db.add_to_db(ac_id=str(userid),ac_name=str(data['name']),last_tweet=int(data['tweet_id']))
+                try:
+                    db.add_to_db(ac_id=str(userid),ac_name=str(data['name']),last_tweet=int(data['tweet_id']))
+                except:
+                    db.update_lastweet(ac_id=str(userid),last_tweet=int(data['tweet_id']))
                 userid=userid+1
-                self.sendMessage(chat_id=chatid,text=str(data['text'])+"Via"+" ["+str(data['name'])+" ]",timeout=200,disable_web_page_preview=False)
+                n = self.set_last_tweet(userid)
+                self.sendMessage(chat_id=chatid,text=str(data['text'])+"\n Via"+" ["+str(data['name'])+" ]",timeout=200,disable_web_page_preview=False)
                 time.sleep(5)
     
+    def set_last_tweet(self,user_id):
+        db = Users()
+        last_tweet = db.get_lastweet(ac_id=int(user_id))
+        try:
+            k = int(last_tweet[0][0])
+        except:
+            k=0
+        return k
+
+
+
 
 
     

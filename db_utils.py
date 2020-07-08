@@ -37,11 +37,25 @@ class Users:
             ac_name = ""
         if not last_tweet:
             last_tweet = 0
-        data = (ac_id,ac_name,last_tweet)
-        command = "INSERT INTO acdet (ACID, ACCNAME , LAST_TWEET) VALUES (%s, %s, %s)"
-        cur.execute(command, data)
-        conn.commit()
-        return True
+        try:
+            data = (ac_id,ac_name,last_tweet)
+            command = "INSERT INTO acdet (ACID, ACCNAME , LAST_TWEET) VALUES (%s, %s, %s)"
+            cur.execute(command, data)
+            conn.commit()
+        except:
+            conn.rollback()
+        finally:
+            return True
+    
+    def update_lastweet(self,ac_id,last_tweet):
+        try:
+            cur.execute("UPDATE acdet SET LAST_TWEET=%s WHERE ACID=%s",(last_tweet,ac_id))
+            conn.commit()
+        except:
+            print("problem")
+        finally:    
+            return True
+
 
     def getUser_from_userid(self, ac_id):
         """Get user details from just userid!"""
