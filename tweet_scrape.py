@@ -1,4 +1,5 @@
 import os
+import time
 import tweepy as tp
 from dotenv import load_dotenv
 from telegram import Bot
@@ -45,6 +46,7 @@ class TweetBot(Bot):
                 db.add_to_db(ac_id=str(userid),ac_name=str(data['name']),last_tweet=int(data['tweet_id']))
                 userid=userid+1
                 self.sendMessage(chat_id=chatid,text=str(data['text'])+"Via"+" ["+str(data['name'])+" ]",timeout=200)
+                time.sleep(5)
     
 
 
