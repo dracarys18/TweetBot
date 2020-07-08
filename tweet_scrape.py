@@ -25,7 +25,7 @@ class TweetBot(Bot):
             k = int(last_tweet[0][0])
         except:
             k=0
-        chatid = -1001418848817
+        chatid = -1001422338305
         try:
             for i in self.userslist:
                 if k!=0:
@@ -45,7 +45,7 @@ class TweetBot(Bot):
                 }
                 db.add_to_db(ac_id=str(userid),ac_name=str(data['name']),last_tweet=int(data['tweet_id']))
                 userid=userid+1
-                self.sendMessage(chat_id=chatid,text=str(data['text'])+"Via"+" ["+str(data['name'])+" ]",timeout=200)
+                self.sendMessage(chat_id=chatid,text=str(data['text'])+"Via"+" ["+str(data['name'])+" ]",timeout=200,disable_web_page_preview=False)
                 time.sleep(5)
     
 
