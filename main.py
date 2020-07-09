@@ -8,10 +8,9 @@ import time
 
 user_list = ["utdreport","manutd"]
 
-def start(bot,update):
+def startbot():
     Twitter_stream =  ts.TweetBot(user_list)
     Twitter_stream.fetch_tweets()
-    print('Streaming to'+update.message.chat.title)
 
 if __name__ == '__main__':
     user_list = ["utdreport","manutd"]
@@ -19,8 +18,8 @@ if __name__ == '__main__':
     API_TOKEN = str(os.getenv("TELEGRAM_BOT"))
     updater = Updater(token=API_TOKEN,use_context=True)
     dispatcher = updater.dispatcher
-    dispatcher.add_handler(CommandHandler('start',start))
-    updater.start_polling()
-    updater.idle()
+    while True:
+        startbot()
+        time.sleep(5)
 
     
