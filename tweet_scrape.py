@@ -14,13 +14,17 @@ class TwitterStream(tp.StreamListener):
     def on_data(self,data):
         try:
             d = json.loads(data)
-            tg_text = d['text']
             reply = d['in_reply_to_screen_name']
-            print(reply)
+            tw_name = d['user']['name']
+            if 'extended_tweet' in d:
+                tg_text = d['extended_tweet']['full_text']
+            else:
+                tg_text = d['text']
+            #print(reply)
             if(str(reply) == 'None'):
-                if('RT @' not in d['text']):    
+                if('RT @' not in tg_text):    
                     bot = telegram.Bot(token=token)
-                    bot.sendMessage(chat_id=chatid,text=tg_text+"\n Via"+" ["+d['user']['name']+" ]",timeout=200,disable_web_page_preview=False)
+                    bot.sendMessage(chat_id=chatid,text=tg_text+"\n Via"+" ["+tw_name+" ]",timeout=200,disable_web_page_preview=False)
                     time.sleep(3)
                 else:
                     print("It's a retweet so not posting it")
@@ -55,7 +59,7 @@ class TweetBot():
         api = self.authorize()
         listener = TwitterStream()
         account_list = self.get_tweet_acid(self.userslist)
-        stream_tweet = tp.Stream(api,listener)
+        stream_tweet = tp.Stream(api,listener,tweet_mode='extended')
         stream_tweet.filter(follow=account_list)
 
     def get_tweet_acid(self,user_list):
@@ -67,14 +71,3 @@ class TweetBot():
             id = user.id
             list_id.append(str(id))
         return list_id        
-            
-        
-
-
-
-
-
-
-    
-
-
