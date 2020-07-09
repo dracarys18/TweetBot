@@ -1,19 +1,26 @@
 import telegram
 import logging
-from telegram.ext import Updater
+from telegram.ext import Updater,CommandHandler
 import os
+import tweet_scrape as ts
 from dotenv import load_dotenv
-from tweet_scrape import TweetBot
 import time
+
+user_list = ["utdreport","manutd"]
+
+def start(bot,update):
+    Twitter_stream =  ts.TweetBot(user_list)
+    Twitter_stream.fetch_tweets()
+    print('Streaming to'+update.message.chat.title)
 
 if __name__ == '__main__':
     user_list = ["utdreport","manutd"]
     load_dotenv("keys.env")
     API_TOKEN = str(os.getenv("TELEGRAM_BOT"))
-    updater = Updater(bot=TweetBot(user_list,API_TOKEN),use_context=True)
+    updater = Updater(token=API_TOKEN,use_context=True)
     dispatcher = updater.dispatcher
-    yes = TweetBot(user_list,API_TOKEN)
-    while True:
-        yes.fetch_tweets()
-        time.sleep(5)
+    dispatcher.add_handler(CommandHandler('start',start))
+    updater.start_polling()
+    updater.idle()
+
     

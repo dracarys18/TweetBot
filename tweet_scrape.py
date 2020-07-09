@@ -1,61 +1,75 @@
 import os
 import time
 import tweepy as tp
+import telegram
+import json
 from dotenv import load_dotenv
-from telegram import Bot
-from db_utils import Users
 
-class TweetBot(Bot):
+load_dotenv("keys.env")
+token = str(os.getenv("TELEGRAM_BOT"))
+chatid = -1001422338305
 
-    def __init__(self,user_list,token):
-        super().__init__(token=token)
+class TwitterStream(tp.StreamListener):
+
+    def on_data(self,data):
+        try:
+            d = json.loads(data)
+            tg_text = d['text']
+            reply = d['in_reply_to_screen_name']
+            print(reply)
+            if(str(reply) == 'None'):
+                if('RT @' not in d['text']):    
+                    bot = telegram.Bot(token=token)
+                    bot.sendMessage(chat_id=chatid,text=tg_text+"\n Via"+" ["+d['user']['name']+" ]",timeout=200,disable_web_page_preview=False)
+                    time.sleep(3)
+                else:
+                    print("It's a retweet so not posting it")
+            else:
+                print("It's a reply so not posting that")
+        except Exception as e:
+            print(e)
+
+        return True
+
+    def on_error(self, status):
+        print(status)
+
+
+
+class TweetBot():
+
+    def __init__(self,user_list):
         self.userslist = list(user_list)
 
-    def fetch_tweets(self):
-        load_dotenv("keys.env")
+    def authorize(self):
         consumer_key = str(os.getenv("CONSUMER_KEY"))
         consumer_secret = str(os.getenv("CONSUMER_SECRET"))
-        auth = tp.OAuthHandler(consumer_key,consumer_secret)
-        api = tp.API(auth)
-        db = Users()
-        userid = 0
-        results = []
-        n = self.set_last_tweet(userid)
-        chatid = -1001422338305
-        try:
-            for i in self.userslist:
-                if n!=0:
-                    twit=api.user_timeline(screen_name=i,count=20,since_id=n,include_retweets=True,tweet_mode = 'extended')
-                    results.append(twit)
-                else:
-                    twit = api.user_timeline(screen_name=i,count=20,include_retweets=True,tweet_mode = 'extended')
-                    results.append(twit)
-        except tp.error.TweepError as err:
-            print(str(err))
-        for k in results:
-            for i in k:
-                data = {
-                    'tweet_id'  : i.id ,
-                    'name'  : i.user.name,             
-                    'text'  : i.full_text
-                }
-                try:
-                    db.add_to_db(ac_id=str(userid),ac_name=str(data['name']),last_tweet=int(data['tweet_id']))
-                except:
-                    db.update_lastweet(ac_id=str(userid),last_tweet=int(data['tweet_id']))
-                userid=userid+1
-                n = self.set_last_tweet(userid)
-                self.sendMessage(chat_id=chatid,text=str(data['text'])+"\n Via"+" ["+str(data['name'])+" ]",timeout=200,disable_web_page_preview=False)
-                time.sleep(5)
-    
-    def set_last_tweet(self,user_id):
-        db = Users()
-        last_tweet = db.get_lastweet(ac_id=int(user_id))
-        try:
-            k = int(last_tweet[0][0])
-        except:
-            k=0
-        return k
+        access_token = str(os.getenv("ACCESS_TOKEN"))
+        access_token_secret = str(os.getenv("ACCESS_TOKEN_SECRET"))
+        autho = tp.OAuthHandler(consumer_key,consumer_secret)
+        autho.set_access_token(access_token,access_token_secret)
+        return autho
+
+
+    def fetch_tweets(self):
+        api = self.authorize()
+        listener = TwitterStream()
+        account_list = self.get_tweet_acid(self.userslist)
+        stream_tweet = tp.Stream(api,listener)
+        stream_tweet.filter(follow=account_list)
+
+    def get_tweet_acid(self,user_list):
+        api = self.authorize()
+        api_object = tp.API(api)
+        list_id = []
+        for i in user_list:
+            user = api_object.get_user(screen_name=str(i))
+            id = user.id
+            list_id.append(str(id))
+        return list_id        
+            
+        
+
 
 
 
