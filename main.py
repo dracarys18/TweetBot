@@ -6,7 +6,7 @@ import tweet_scrape as ts
 from dotenv import load_dotenv
 import time
 
-user_list = ["utdreport","manutd"]
+user_list = ["utdreport","manutd","ManUnitedZone_"]
 
 def startbot():
     Twitter_stream =  ts.TweetBot(user_list)
