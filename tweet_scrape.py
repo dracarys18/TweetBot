@@ -65,7 +65,7 @@ class TweetBot():
         listener = TwitterStream()
         account_list = self.get_tweet_acid(self.userslist)
         stream_tweet = tp.Stream(api,listener,tweet_mode='extended')
-        stream_tweet.filter(follow=account_list,is_async=True)
+        stream_tweet.filter(follow=account_list)
 
     def get_tweet_acid(self,user_list):
         api = self.authorize()
