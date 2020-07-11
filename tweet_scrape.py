@@ -83,7 +83,8 @@ class TweetBot():
         tweet_url = ''
         try:
             for url in json_data['entities']['urls']:
-                tweet_url = tweet_url+"\n"+str(url['expanded_url'])
+                if not 'https://twitter.com' in url['expanded_url']:
+                    tweet_url = tweet_url+"\n"+str(url['expanded_url'])
         except:
             tweet_url=''        
         return tweet_url  
