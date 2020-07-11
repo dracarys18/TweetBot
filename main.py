@@ -13,7 +13,6 @@ def startbot():
     Twitter_stream.fetch_tweets()
 
 if __name__ == '__main__':
-    user_list = ["utdreport","manutd"]
     load_dotenv("keys.env")
     API_TOKEN = str(os.getenv("TELEGRAM_BOT"))
     updater = Updater(token=API_TOKEN,use_context=True)
