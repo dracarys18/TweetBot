@@ -3,6 +3,7 @@ import time
 import tweepy as tp
 import telegram
 import json
+from userslist import *
 from dotenv import load_dotenv
 
 load_dotenv("keys.env")
@@ -13,8 +14,9 @@ class TwitterStream(tp.StreamListener):
 
     def on_data(self,data):
         try:
+            tb = TweetBot()
             d = json.loads(data)
-            tweet_url = self.get_tweet_url(json_data=d)
+            tweet_url = tb.get_tweet_url(json_data=d)
             reply = d['in_reply_to_screen_name']
             tw_name = d['user']['name']
             if 'extended_tweet' in d:
@@ -42,21 +44,13 @@ class TwitterStream(tp.StreamListener):
     def on_error(self,status_code):
         if status_code == 420:
             return False
-        
-    def get_tweet_url(self,json_data):
-        tweet_url = ''
-        try:
-            for i in range(json_data['entities']['urls']):
-                tweet_url = tweet_url+"\n"+str(json_data['entities']['urls'][i]['expanded_url'])
-        except:
-            tweet_url=''        
-        return tweet_url   
+
 
 
 class TweetBot():
 
-    def __init__(self,user_list):
-        self.userslist = list(user_list)
+    def __init__(self):
+        pass
 
     def authorize(self):
         consumer_key = str(os.getenv("CONSUMER_KEY"))
@@ -71,7 +65,7 @@ class TweetBot():
     def fetch_tweets(self):
         api = self.authorize()
         listener = TwitterStream()
-        account_list = self.get_tweet_acid(self.userslist)
+        account_list = self.get_tweet_acid(userslist)
         stream_tweet = tp.Stream(api,listener,tweet_mode='extended')
         stream_tweet.filter(follow=account_list)
 
@@ -84,3 +78,12 @@ class TweetBot():
             id = user.id
             list_id.append(str(id))
         return list_id    
+    
+    def get_tweet_url(self,json_data):
+        tweet_url = ''
+        try:
+            for url in json_data['entities']['urls']:
+                tweet_url = tweet_url+"\n"+str(url['expanded_url'])
+        except:
+            tweet_url=''        
+        return tweet_url  
