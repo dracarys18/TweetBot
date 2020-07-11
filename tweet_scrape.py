@@ -14,6 +14,7 @@ class TwitterStream(tp.StreamListener):
     def on_data(self,data):
         try:
             d = json.loads(data)
+            tweet_url = self.get_tweet_url(json_data=d)
             reply = d['in_reply_to_screen_name']
             tw_name = d['user']['name']
             if 'extended_tweet' in d:
@@ -24,7 +25,7 @@ class TwitterStream(tp.StreamListener):
             if(str(reply) == 'None'):
                 if('RT @' not in tg_text):    
                     bot = telegram.Bot(token=token)
-                    bot.sendMessage(chat_id=chatid,text=tg_text+"\n Via"+" ["+tw_name+" ]",timeout=200,disable_web_page_preview=False)
+                    bot.sendMessage(chat_id=chatid,text=tg_text+"\n"+tweet_url+"\n"+"Via"+"["+tw_name+"]",timeout=200,disable_web_page_preview=False)
                     time.sleep(3)
                 else:
                     print("It's a retweet so not posting it")
@@ -42,7 +43,14 @@ class TwitterStream(tp.StreamListener):
         if status_code == 420:
             return False
         
-
+    def get_tweet_url(self,json_data):
+        tweet_url = ''
+        try:
+            for i in range(json_data['entities']['urls']):
+                tweet_url = tweet_url+"\n"+str(json_data['entities']['urls'][i]['expanded_url'])
+        except:
+            tweet_url=''        
+        return tweet_url   
 
 
 class TweetBot():
@@ -75,4 +83,4 @@ class TweetBot():
             user = api_object.get_user(screen_name=str(i))
             id = user.id
             list_id.append(str(id))
-        return list_id        
+        return list_id    
