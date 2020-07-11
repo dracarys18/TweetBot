@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv("keys.env")
 token = str(os.getenv("TELEGRAM_BOT"))
-chatid = -1001422338305
+chatid = int(os.getenv("CHAT_ID"))
 
 class TwitterStream(tp.StreamListener):
 
