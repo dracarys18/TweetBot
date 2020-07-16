@@ -1,3 +1,4 @@
+import html
 import os
 import time
 import tweepy as tp
@@ -33,9 +34,9 @@ class TwitterStream(tp.StreamListener):
                 if('RT @' not in tg_text):    
                     bot = Bot(token=token)
                     if has_media:
-                        bot.sendMessage(chat_id=chatid,text=tg_text+"\n"+tweet_url+"\n"+"Via"+"|"+"["+tw_name+"]"+"("+tweet_link+")"+"|",timeout=200,disable_web_page_preview=False,parse_mode=ParseMode.MARKDOWN)
+                        bot.sendMessage(chat_id=chatid,text=tg_text+"\n"+tweet_url+"\n"+"Via"+"|"+"<a href='"+tweet_link+"'>"+tw_name+"</a>"+"|",timeout=200,disable_web_page_preview=False,parse_mode=ParseMode.HTML)
                     else:
-                         bot.sendMessage(chat_id=chatid,text=tg_text+"\n"+tweet_url+"\n"+"Via"+"|"+"["+tw_name+"]"+"("+tweet_link+")"+"|",timeout=200,disable_web_page_preview=True,parse_mode=ParseMode.MARKDOWN)   
+                         bot.sendMessage(chat_id=chatid,text=tg_text+"\n"+tweet_url+"\n"+"Via"+"|"+"<a href='"+tweet_link+"'>"+tw_name+"</a>"+"|",timeout=200,disable_web_page_preview=True,parse_mode=ParseMode.HTML)   
                     time.sleep(3)
                 else:
                     print("It's a retweet so not posting it")
