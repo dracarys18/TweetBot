@@ -98,7 +98,13 @@ class TweetBot():
         return tweet_url  
     
     def tweet_has_media(self,json_data):
-        if 'media' in json_data['entities']:
-            return True
+        if 'extended_entities' in json_data:
+            if 'media' in json_data['extended_entities']:
+                return True
+            else:
+                return False
         else:
-            return False
+            if 'media' in json_data['entities']:
+                return True
+            else:
+                return False            
