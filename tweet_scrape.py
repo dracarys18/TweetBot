@@ -18,6 +18,7 @@ class TwitterStream(tp.StreamListener):
             tb = TweetBot()
             d = json.loads(data)
             tweet_url = tb.get_tweet_url(json_data=d)
+            has_media = tb.tweet_has_media(json_data=d)
             reply = d['in_reply_to_screen_name']
             tw_name = d['user']['name']
             tw_screen_name = d['user']['screen_name']
@@ -31,7 +32,10 @@ class TwitterStream(tp.StreamListener):
             if(str(reply) == 'None'):
                 if('RT @' not in tg_text):    
                     bot = Bot(token=token)
-                    bot.sendMessage(chat_id=chatid,text=tg_text+"\n"+tweet_url+"\n"+"Via"+"["+"["+tw_name+"]"+"("+tweet_link+")"+"]",timeout=200,disable_web_page_preview=False,parse_mode=ParseMode.MARKDOWN)
+                    if has_media:
+                        bot.sendMessage(chat_id=chatid,text=tg_text+"\n"+tweet_url+"\n"+"Via"+"["+"["+tw_name+"]"+"("+tweet_link+")"+"]",timeout=200,disable_web_page_preview=False,parse_mode=ParseMode.MARKDOWN)
+                    else:
+                         bot.sendMessage(chat_id=chatid,text=tg_text+"\n"+tweet_url+"\n"+"Via"+"["+"["+tw_name+"]"+"("+tweet_link+")"+"]",timeout=200,disable_web_page_preview=True,parse_mode=ParseMode.MARKDOWN)   
                     time.sleep(3)
                 else:
                     print("It's a retweet so not posting it")
@@ -92,3 +96,9 @@ class TweetBot():
         except:
             tweet_url=''        
         return tweet_url  
+    
+    def tweet_has_media(self,json_data):
+        if 'media' in json_data['entities']:
+            return True
+        else:
+            return False
