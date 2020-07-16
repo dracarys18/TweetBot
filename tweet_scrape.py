@@ -1,7 +1,8 @@
 import os
 import time
 import tweepy as tp
-import telegram
+from telegram import Bot
+from telegram import ParseMode
 import json
 from userslist import *
 from dotenv import load_dotenv
@@ -19,6 +20,9 @@ class TwitterStream(tp.StreamListener):
             tweet_url = tb.get_tweet_url(json_data=d)
             reply = d['in_reply_to_screen_name']
             tw_name = d['user']['name']
+            tw_screen_name = d['user']['screen_name']
+            tweet_id = d['id_str']
+            tweet_link = "https://twitter.com/"+tw_screen_name+"/status/"+tweet_id
             if 'extended_tweet' in d:
                 tg_text = d['extended_tweet']['full_text']
             else:
@@ -26,8 +30,8 @@ class TwitterStream(tp.StreamListener):
             #print(reply)
             if(str(reply) == 'None'):
                 if('RT @' not in tg_text):    
-                    bot = telegram.Bot(token=token)
-                    bot.sendMessage(chat_id=chatid,text=tg_text+"\n"+tweet_url+"\n"+"Via"+"["+tw_name+"]",timeout=200,disable_web_page_preview=False)
+                    bot = Bot(token=token)
+                    bot.sendMessage(chat_id=chatid,text=tg_text+"\n"+tweet_url+"\n"+"Via"+"["+"["+tw_name+"]"+"("+tweet_link+")"+"]",timeout=200,disable_web_page_preview=False,parse_mode=ParseMode.MARKDOWN)
                     time.sleep(3)
                 else:
                     print("It's a retweet so not posting it")
