@@ -1,4 +1,5 @@
 python-telegram-bot
 python-dotenv
-tweepy
+tweepy==3.10.0
+
 
