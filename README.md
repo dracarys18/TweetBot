@@ -4,7 +4,7 @@ A simple Telegram Bot to Stream the tweets from any account from twitter to your
 
 # Guide
 1. Get Twitter API Keys and Access Keys from [here](https://developer.twitter.com/en)
-2. Ask for Twitter elevated permissions [here] (https://developer.twitter.com/en/portal/products/essential), click at Elevated option and fill the forms
+2. Ask for Twitter elevated permissions [here](https://developer.twitter.com/en/portal/products/essential), click at Elevated option and fill the forms
 3. Go to [@BotFather](https://t.me/botfather) in telegram and create a Bot
 4. Open keys_sample.env and fill the API Keys and Access Keys and Chat ID where you want the bot to send messages.
 5. Rename `key_sample.env` to `keys.env`
