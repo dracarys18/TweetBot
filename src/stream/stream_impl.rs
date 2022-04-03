@@ -13,7 +13,6 @@ pub async fn stream_tweets(config: &Config, to_follow: Vec<u64>) -> TweetResult<
     let stream = filter().follow(&to_follow).start(token);
     stream
         .try_for_each(|t| async move {
-            println!("here");
             if let StreamMessage::Tweet(tweet) = t {
                 let tweeter = tweet.user.as_ref().expect("Invalid User");
                 let name = &tweeter.name;
