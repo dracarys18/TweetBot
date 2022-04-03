@@ -1,2 +1,2 @@
-pub mod error;
-pub use error::*;
+pub mod tweet_error;
+pub use tweet_error::*;

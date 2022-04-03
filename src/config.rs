@@ -17,7 +17,7 @@ impl Config {
         dotenv::dotenv()?;
         let accounts: Vec<String> = std::env::var("ACCOUNTS")
             .expect("Missing ACCOUNTS")
-            .split(",")
+            .split(',')
             .map(|s| s.to_string())
             .collect();
         assert!(!accounts.is_empty());

@@ -1,6 +1,6 @@
 use crate::config::Config;
 use crate::error::TweetResult;
-use crate::stream::stream::stream_tweets;
+use crate::stream::stream_impl::stream_tweets;
 use crate::utils::get_account_ids;
 
 mod config;
