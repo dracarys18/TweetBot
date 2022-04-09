@@ -32,16 +32,16 @@ pub async fn get_url_entity(tweet: &Tweet) -> Option<String> {
 }
 
 pub async fn get_media_urls(tweet: &Tweet) -> Option<Vec<String>> {
-    if let Some(ext_entity) = tweet.extended_entities.as_ref() {
-        return Some(
+    return if let Some(ext_entity) = tweet.extended_entities.as_ref() {
+        Some(
             ext_entity
                 .media
                 .iter()
                 .map(|e| e.media_url_https.clone())
                 .collect(),
-        );
+        )
     } else {
-        return Some(
+        Some(
             tweet
                 .entities
                 .media
@@ -49,8 +49,8 @@ pub async fn get_media_urls(tweet: &Tweet) -> Option<Vec<String>> {
                 .iter()
                 .map(|m| m.media_url_https.clone())
                 .collect(),
-        );
-    }
+        )
+    };
 }
 pub async fn tweet_has_media(tweet: &Tweet) -> bool {
     tweet.extended_entities.is_some() || tweet.entities.media.is_some()
