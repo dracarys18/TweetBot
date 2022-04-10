@@ -17,7 +17,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 cargo run --release
 ```
 # Heroku usage
-Just do all the things given in the Guide except the 6th part and follow the further steps here for Heroku deployment.
+Just do all the things given in the Guide except the 6th & 7th part and follow the further steps here for Heroku deployment.
 1. Create a Heroku APP
 2. Install Heroku Rust buildpack from [here](https://github.com/emk/heroku-buildpack-rust.git).
 3. Git add and commit the files in the project directory and make sure you have the Heroku CLI installed.
