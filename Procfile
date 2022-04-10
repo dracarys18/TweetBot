@@ -1,1 +1,1 @@
-worker: python3 main.py
+worker: ./target/release/tweet_bot
