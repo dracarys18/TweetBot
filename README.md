@@ -1,6 +1,7 @@
 # TweetBot
 
-A simple Telegram Bot to Stream the tweets from any account from twitter to your telegram channel.  
+A simple Telegram Bot to Stream the tweets from any account from twitter to your telegram channel.This bot has been rewritten in rust if you still want 
+to use the old source you can do that from checking out python branch
 
 # Guide
 1. Get Twitter API Keys and Access Keys from [here](https://developer.twitter.com/en)
