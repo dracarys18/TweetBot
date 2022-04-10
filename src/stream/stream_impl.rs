@@ -27,11 +27,17 @@ pub async fn stream_tweets(config: &Config, to_follow: &[u64]) -> TweetResult<()
                         && tweet.in_reply_to_user_id.unwrap().eq(&_user_id))
                 {
                     let preview = !tweet_has_media(&tweet).await;
-                    bot.send_message(config.chat_id, message)
-                        .parse_mode(ParseMode::Html)
-                        .disable_web_page_preview(preview)
-                        .await
-                        .expect("Failed to send a message");
+                    let contains_keyword = text
+                        .to_lowercase()
+                        .split_whitespace()
+                        .any(|w| config.keywords.contains(&w.to_string()));
+                    if config.keywords.is_empty() || contains_keyword {
+                        bot.send_message(config.chat_id, message)
+                            .parse_mode(ParseMode::Html)
+                            .disable_web_page_preview(preview)
+                            .await
+                            .expect("Failed to send a message");
+                    }
                 }
             }
             Ok(())

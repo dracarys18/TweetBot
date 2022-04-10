@@ -8,6 +8,7 @@ use teloxide::Bot;
 pub struct Config {
     pub accounts: Vec<String>,
     pub chat_id: i64,
+    pub keywords: Vec<String>,
     token: Token,
     bot: AutoSend<Bot>,
 }
@@ -34,6 +35,11 @@ impl Config {
         let access_token_secret =
             std::env::var("ACCESS_TOKEN_SECRET").expect("Missing Acces token Secret");
         assert!(!access_token_secret.is_empty());
+        let keywords: Vec<String> = std::env::var("KEYWORDS")
+            .unwrap_or_default()
+            .split(',')
+            .map(|s| s.to_lowercase())
+            .collect();
         let con_token = KeyPair::new(consumer_key, consumer_secret);
         let access_token = KeyPair::new(access_token, access_token_secret);
         let token = Token::Access {
@@ -44,6 +50,7 @@ impl Config {
         Ok(Self {
             accounts,
             chat_id,
+            keywords,
             token,
             bot,
         })
