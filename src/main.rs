@@ -11,7 +11,7 @@ mod utils;
 async fn run_bot() -> TweetResult<()> {
     let config = Config::new()?;
     let to_follow = get_account_ids(config.token(), config.accounts.clone()).await?;
-    stream_tweets(&config, to_follow).await?;
+    stream_tweets(&config, &to_follow).await?;
     Ok(())
 }
 #[tokio::main]

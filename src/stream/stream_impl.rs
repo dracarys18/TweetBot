@@ -7,10 +7,10 @@ use teloxide::prelude2::*;
 use teloxide::types::ParseMode;
 use teloxide::utils::html::escape;
 
-pub async fn stream_tweets(config: &Config, to_follow: Vec<u64>) -> TweetResult<()> {
+pub async fn stream_tweets(config: &Config, to_follow: &[u64]) -> TweetResult<()> {
     let token = config.token();
     let bot = config.bot();
-    let stream = filter().follow(&to_follow).start(token);
+    let stream = filter().follow(to_follow).start(token);
     stream
         .try_for_each(|t| async move {
             if let StreamMessage::Tweet(tweet) = t {
@@ -21,8 +21,10 @@ pub async fn stream_tweets(config: &Config, to_follow: Vec<u64>) -> TweetResult<
                 let text = escape(&tweet.text);
                 let message = format!("{}\nVia |<a href='{}'>{}</a>|", text, tweet_url, name);
                 //Don't send retweeted tweets and only send if the reply is from the current user (in case of threads)
-                if matches!(tweet.retweeted, Some(false))
-                    || matches!(tweet.in_reply_to_user_id, Some(_user_id))
+                if (!text.starts_with("RT @") && matches!(tweet.in_reply_to_user_id, None))
+                    || (!text.starts_with("RT @")
+                        && (to_follow.contains(&_user_id))
+                        && tweet.in_reply_to_user_id.unwrap().eq(&_user_id))
                 {
                     let preview = !tweet_has_media(&tweet).await;
                     bot.send_message(config.chat_id, message)
