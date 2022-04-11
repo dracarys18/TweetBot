@@ -32,4 +32,4 @@ git push heroku HEAD:master --force
 # Sample Channel
 This channel is just a sample channel that streams the tweets from the Twitter accounts which are usually regular with Manchester United football club latest news and stuff.
 
-Just visit [This Telegram Channel](https://t.me/notachannelyouwannavisitv2) to check how the bot works
+Just visit [This Telegram Channel](https://t.me/utdupdate_s) to check how the bot works
