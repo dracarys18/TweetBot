@@ -11,6 +11,7 @@ pub async fn stream_tweets(config: &Config, to_follow: &[u64]) -> TweetResult<()
     let token = config.token();
     let bot = config.bot();
     let stream = filter().follow(to_follow).start(token);
+    eprintln!("Started the stream");
     stream
         .try_for_each(|t| async move {
             if let StreamMessage::Tweet(tweet) = t {
@@ -37,6 +38,7 @@ pub async fn stream_tweets(config: &Config, to_follow: &[u64]) -> TweetResult<()
                             .disable_web_page_preview(preview)
                             .await
                             .expect("Failed to send a message");
+                        eprintln!("Send {} to {},", tweet_url, config.chat_id);
                     }
                 }
             }
