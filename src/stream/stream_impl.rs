@@ -19,7 +19,7 @@ pub async fn stream_tweets(config: &Config, to_follow: &[u64]) -> TweetResult<()
                 let _user_id = tweeter.id;
                 let tweet_url = get_tweet_url(&tweet).await.unwrap_or_default();
                 let text = escape(&tweet.text);
-                let message = format!("{}\nVia |<a href='{}'>{}</a>|", text, tweet_url, name);
+                let message = format!("{}\n\nVia |<a href='{}'>{}</a>|", text, tweet_url, name);
                 //Don't send retweeted tweets and only send if the reply is from the current user (in case of threads)
                 if (!text.starts_with("RT @") && matches!(tweet.in_reply_to_user_id, None))
                     || (!text.starts_with("RT @")
