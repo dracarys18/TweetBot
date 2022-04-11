@@ -32,13 +32,15 @@ pub async fn stream_tweets(config: &Config, to_follow: &[u64]) -> TweetResult<()
                         .to_lowercase()
                         .split_whitespace()
                         .any(|w| config.keywords.contains(&w.to_string()));
-                    if config.keywords.is_empty() || contains_keyword {
+                    if (config.keywords.is_empty() || config.keywords.eq(&vec![""]))
+                        || contains_keyword
+                    {
                         bot.send_message(config.chat_id, message)
                             .parse_mode(ParseMode::Html)
                             .disable_web_page_preview(preview)
                             .await
                             .expect("Failed to send a message");
-                        eprintln!("Send {} to {},", tweet_url, config.chat_id);
+                        eprintln!("Sent {} to {},", tweet_url, config.chat_id);
                     }
                 }
             }
