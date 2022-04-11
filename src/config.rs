@@ -1,6 +1,7 @@
 use crate::error::TweetResult;
 use egg_mode::KeyPair;
 use egg_mode::Token;
+use std::path::PathBuf;
 use teloxide::prelude::{AutoSend, RequesterExt};
 use teloxide::Bot;
 
@@ -15,7 +16,10 @@ pub struct Config {
 
 impl Config {
     pub fn new() -> TweetResult<Self> {
-        dotenv::dotenv()?;
+        //Only run dotenv stuff if .env exists
+        if PathBuf::from("./.env").exists() {
+            dotenv::dotenv()?;
+        }
         let accounts: Vec<String> = std::env::var("ACCOUNTS")
             .expect("Missing ACCOUNTS")
             .split(',')
