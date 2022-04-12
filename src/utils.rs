@@ -19,7 +19,9 @@ pub async fn get_tweet_url(tweet: &Tweet) -> Option<String> {
         screen_name, tweet_id
     ))
 }
-
+pub async fn tweet_has_url(tweet: &Tweet) -> bool {
+    !tweet.entities.urls.is_empty()
+}
 pub async fn get_url_entity(tweet: &Tweet) -> Option<String> {
     let urls = tweet.entities.urls.clone();
     if urls.is_empty() {
