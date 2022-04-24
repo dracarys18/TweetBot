@@ -3,8 +3,8 @@ use crate::error::TweetResult;
 use crate::utils::{get_tweet_url, tweet_has_media, tweet_has_url};
 use egg_mode::stream::{filter, StreamMessage};
 use futures::TryStreamExt;
-use teloxide::prelude2::*;
-use teloxide::types::ParseMode;
+use teloxide::prelude::*;
+use teloxide::types::{ChatId, ParseMode};
 use teloxide::utils::html::escape;
 
 pub async fn stream_tweets(config: &Config, to_follow: &[u64]) -> TweetResult<()> {
@@ -35,7 +35,7 @@ pub async fn stream_tweets(config: &Config, to_follow: &[u64]) -> TweetResult<()
                     if (config.keywords.is_empty() || config.keywords.eq(&vec![""]))
                         || contains_keyword
                     {
-                        bot.send_message(config.chat_id, message)
+                        bot.send_message(ChatId(config.chat_id), message)
                             .parse_mode(ParseMode::Html)
                             .disable_web_page_preview(preview)
                             .await
